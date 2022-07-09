@@ -1,7 +1,7 @@
 import cv2
 from cvzone.HandTrackingModule import HandDetector
 import numpy as np
-
+import math
 offset = 20
 imageSize = 300
 cap = cv2.VideoCapture(0)
@@ -20,7 +20,17 @@ while True :
 
         imgCropshape = imgCrop.shape
 
-        imgWhite[0:imgCropshape[0],0:imgCropshape[1]] = imgCrop
+
+        aspectRation = h/w
+
+        if aspectRation > 1 :
+            k = imageSize / h
+            wCal =math.ceil (k * w)
+            imgResize = cv2.resize(imgCrop,(wCal,imageSize))
+            imgResizeShape = imgResize.shape
+            # put bbox in center of white image
+            wGap = math.ceil((imageSize - wCal)/2)
+            imgWhite[:, wGap:wCal+wGap] = imgResize
 
         cv2.imshow("ImageCrop", imgCrop)
         cv2.imshow("ImageWhite", imgWhite)
